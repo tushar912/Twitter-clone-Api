@@ -6,7 +6,10 @@ const User = require('../models/user');
 const { body,validationResult} = require('express-validator');
 const authenticate= require('../authenticate');
 
-userRouter.post('/signup',(req,res)=>{
+userRouter.post('/signup',[
+   body('email').isEmail(),
+   body('password').isLength({ min: 5 })
+],(req,res)=>{
     
   
     User.register(new User({username: req.body.username,email:req.body.email}), 
@@ -25,7 +28,10 @@ userRouter.post('/signup',(req,res)=>{
     }
   })
 })
-userRouter.post('/login',passport.authenticate('local'),(req,res)=>{
+userRouter.post('/login',[
+  body('email').isEmail(),
+  body('password').isLength({ min: 5 })
+],passport.authenticate('local'),(req,res)=>{
   var token = authenticate.getToken({_id: req.user._id});
     res.statusCode = 200;
     res.setHeader('Content-Type', 'application/json');
