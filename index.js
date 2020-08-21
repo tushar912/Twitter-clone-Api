@@ -20,9 +20,7 @@ connect.then((db) => {
     console.log("Connected correctly to server");
 }, (err) => { console.log(err); })
 
-app.get("/", (req, res) => {
-    res.send("Welcome to the Twitter API <br> Visit /api for the API functionality.");
-});
+
 app.use(session({
     name: 'session-id',
     secret: '12345-67890-09876-54321',
@@ -45,6 +43,11 @@ function auth (req, res, next) {
     }
 }
 app.use("/api/user", userRouter);
+app.use(auth);
+app.get("/", (req, res) => {
+    res.send("Welcome to the Twitter API <br> Visit /api for the API functionality.");
+});
+
 // app.use("/api/profile", profileRouter);
 // app.use("/api/tweet", tweetRouter);
 

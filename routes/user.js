@@ -1,15 +1,14 @@
 const express = require('express');
-const  userRouter= express.Router;
+const  userRouter= express.Router();
 
 const passport = require('passport');
-const User = require('./models/user');
-const { body, validationResult } = require('express-validator');
+const User = require('../models/user');
+const { body,validationResult} = require('express-validator');
 
-userRouter.post('/signup',[
-    body('email').isEmail(),
-    body('password').isLength({ min: 5 })
-  ],(req,res)=>{
-    User.register(new User({email: req.body.email}), 
+userRouter.post('/signup',(req,res)=>{
+    
+  
+    User.register(new User({username: req.body.username,email:req.body.email}), 
     req.body.password, (err, user) => {
     if(err) {
       res.statusCode = 500;
@@ -25,10 +24,7 @@ userRouter.post('/signup',[
     }
   })
 })
-userRouter.post('/login',[
-    body('email').isEmail(),
-    body('password').isLength({ min: 5 })
-  ],passport.authenticate('local'),(req,res)=>{
+userRouter.post('/login',passport.authenticate('local'),(req,res)=>{
     res.statusCode = 200;
     res.setHeader('Content-Type', 'application/json');
     res.json({success: true, status: 'You are successfully logged in!'});
