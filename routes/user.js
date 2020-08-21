@@ -4,6 +4,7 @@ const  userRouter= express.Router();
 const passport = require('passport');
 const User = require('../models/user');
 const { body,validationResult} = require('express-validator');
+const authenticate= require('../authenticate');
 
 userRouter.post('/signup',(req,res)=>{
     
@@ -25,6 +26,7 @@ userRouter.post('/signup',(req,res)=>{
   })
 })
 userRouter.post('/login',passport.authenticate('local'),(req,res)=>{
+  var token = authenticate.getToken({_id: req.user._id});
     res.statusCode = 200;
     res.setHeader('Content-Type', 'application/json');
     res.json({success: true, status: 'You are successfully logged in!'});
