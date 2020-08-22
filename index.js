@@ -25,12 +25,12 @@ app.use(passport.initialize());
 
 app.use("/api/user", userRouter);
 
-app.get("/", authenticate.verifyUser,(req, res) => {
+app.get("/",(req, res) => {
     res.send("Welcome to the Twitter API <br> Visit /api for the API functionality.");
 });
 
 // app.use("/api/profile", profileRouter);
-app.use("/api/tweet", tweetRouter);
+app.use("/api/tweet",auth.verifyUser, tweetRouter);
 
 app.listen(port, () => console.log("server running "));
 
