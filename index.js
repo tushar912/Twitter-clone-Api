@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const userRouter = require('./routes/user');
-// const profileRouter = require('./routes/profile');
+const profileRouter = require('./routes/profile');
 const tweetRouter = require('./routes/tweet');
 var session = require('express-session');
 const app = express();
@@ -11,6 +11,7 @@ var passport = require('passport');
 var authenticate = require('./authenticate');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+const auth = require('./authenticate');
 const url = 'mongodb://localhost:27017/twitter';
 
 const connect = mongoose.connect(url,{ useNewUrlParser: true ,useUnifiedTopology: true });
@@ -29,7 +30,7 @@ app.get("/",(req, res) => {
     res.send("Welcome to the Twitter API <br> Visit /api for the API functionality.");
 });
 
-// app.use("/api/profile", profileRouter);
+app.use("/api/profile",auth.verifyUser, profileRouter);
 app.use("/api/tweet",auth.verifyUser, tweetRouter);
 
 app.listen(port, () => console.log("server running "));

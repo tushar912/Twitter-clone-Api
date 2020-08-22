@@ -5,7 +5,7 @@ const Follow = require('../models/follows');
 const Tweet = require('../models/tweet');
 const auth = require('../authenticate')
 
-tweetRouter.post('/',auth.verifyUser,(req,res)=>{
+tweetRouter.post('/',(req,res)=>{
     const tweet = new Tweet;
     tweet.author= req.user._id;
     tweet.body = req.body.body;
@@ -15,31 +15,34 @@ tweetRouter.post('/',auth.verifyUser,(req,res)=>{
     })
     
 })
-tweetRouter.get('/:id',auth.verifyUser,(req,res)=>{
+tweetRouter.get('/:id',(req,res)=>{
     Tweet.findById(req.params.id).then((tweet)=>{
-        if(!tweet){
-            return res.json('no tweet');
+        if(tweet){
+            if(tweet.author.toString() !== req.user._id.toString()){
+                return res.json("not authorized");
+            }
+            res.json(tweet)
         }
-        if(tweet.author.toString() !== req.user._id.toString()){
-            return res.json("not authorized");
-        }
-        res.json(tweet)
-    })
+        
+    }).catch((err)=> {
+        res.status(404);
+    res.json(err);}
+    )
 })
-tweetRouter.delete('/:id',auth.verifyUser,(req,res)=>{
+tweetRouter.delete('/:id',(req,res)=>{
     Tweet.findById(req.params.id).then((tweet)=>{
-        if(!tweet){
-            return res.json('no tweet');
-        }
+       if(tweet){
         if(tweet.author.toString() !== req.user._id.toString()){
             return res.json("not authorized");
         }
         return tweet.remove();
+       }
+        
     }).then((tweet)=>{
         res.json("deleted");
     })
-    .catch((err)=>{
-res.json(err);
-    })
+    .catch((err)=> {
+        res.status(404);
+    res.json(err);})
 })
 module.exports = tweetRouter;
