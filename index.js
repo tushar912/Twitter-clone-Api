@@ -35,3 +35,4 @@ app.use("/api/tweet",auth.verifyUser, tweetRouter);
 
 app.listen(port, () => console.log("server running "));
 
+module.exports = app;
