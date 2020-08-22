@@ -11,6 +11,7 @@ var passport = require('passport');
 var authenticate = require('./authenticate');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+const cors= require('cors');
 const auth = require('./authenticate');
 const url = 'mongodb://localhost:27017/twitter';
 
@@ -21,7 +22,7 @@ connect.then((db) => {
     console.log("Connected correctly to server");
 }, (err) => { console.log(err); })
 
-
+app.use(cors());
 app.use(passport.initialize());
 
 app.use("/api/user", userRouter);
